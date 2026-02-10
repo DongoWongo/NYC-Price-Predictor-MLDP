@@ -130,13 +130,10 @@ def build_feature_vector(
 ):
     """Construct the 22-feature vector from user inputs."""
 
-    # Total units
-    total_units = residential_units + commercial_units
-
-    # Cap units at training 99th percentile
+    # Cap units at training 99th percentile, then compute total from capped values
     residential_units = min(residential_units, lookup["residential_units_cap"])
     commercial_units = min(commercial_units, lookup["commercial_units_cap"])
-    total_units = min(total_units, lookup["total_units_cap"])
+    total_units = min(residential_units + commercial_units, lookup["total_units_cap"])
 
     # Handle optional square footage (0 means unknown > NaN > median imputed)
     gross_sqft_val = gross_sqft if gross_sqft > 0 else np.nan
@@ -223,7 +220,7 @@ available_neighborhoods = lookup["borough_neighborhoods"].get(borough, [])
 neighborhood = st.sidebar.selectbox("Neighbourhood", options=available_neighborhoods)
 
 # ZIP codes filtered by borough
-available_zips = lookup["borough_zipcodes"].get(borough, [])
+available_zips = [z for z in lookup["borough_zipcodes"].get(borough, []) if z != 0]
 zip_code = st.sidebar.selectbox("ZIP Code", options=available_zips)
 
 # Property Type
@@ -248,7 +245,7 @@ tax_class_sale = st.sidebar.selectbox(
 st.sidebar.markdown('<div class="section-header">Size & Age</div>', unsafe_allow_html=True)
 
 residential_units = st.sidebar.number_input(
-    "Residential Units", min_value=0, max_value=500, value=1, step=1,
+    "Residential Units", min_value=1, max_value=500, value=1, step=1,
 )
 commercial_units = st.sidebar.number_input(
     "Commercial Units", min_value=0, max_value=100, value=0, step=1,
