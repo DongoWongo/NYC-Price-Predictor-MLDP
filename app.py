@@ -220,7 +220,7 @@ available_neighborhoods = lookup["borough_neighborhoods"].get(borough, [])
 neighborhood = st.sidebar.selectbox("Neighbourhood", options=available_neighborhoods)
 
 # ZIP codes filtered by borough
-available_zips = [z for z in lookup["borough_zipcodes"].get(borough, []) if z != 0]
+available_zips = lookup["borough_zipcodes"].get(borough, [])
 zip_code = st.sidebar.selectbox("ZIP Code", options=available_zips)
 
 # Property Type
