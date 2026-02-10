@@ -1,4 +1,4 @@
-"""NYC Real Estate Sale Price Predictor -- Streamlit Application."""
+"""NYC Real Estate Sale Price Predictor"""
 
 import streamlit as st
 import pandas as pd
