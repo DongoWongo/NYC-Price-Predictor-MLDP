@@ -220,7 +220,7 @@ available_neighborhoods = lookup["borough_neighborhoods"].get(borough, [])
 neighborhood = st.sidebar.selectbox("Neighbourhood", options=available_neighborhoods)
 
 # ZIP codes filtered by borough
-available_zips = lookup["borough_zipcodes"].get(borough, [])
+available_zips = [z for z in lookup["borough_zipcodes"].get(borough, []) if z != 0]
 zip_code = st.sidebar.selectbox("ZIP Code", options=available_zips)
 
 # Property Type
@@ -414,22 +414,23 @@ with st.expander("About This Model"):
 
         | Parameter | Value |
         |---|---|
-        | Number of trees | 300 |
+        | Number of trees | 200 |
         | Max depth | 20 |
-        | Min samples leaf | 1 |
-        | Min samples split | 10 |
+        | Min samples leaf | 2 |
+        | Min samples split | 5 |
 
-        **Training data:** 43,411 NYC property sales from 2016-2017
+        **Training data:** 31,404 NYC property sales from 2016-2017
         (after cleaning non-market transfers, capping outliers at the 99th percentile,
-        and removing properties with missing construction year).
+        removing properties with missing construction year, invalid ZIP codes,
+        and zero-unit properties).
 
         **Test set performance (dollar scale):**
         | Metric | Value |
         |---|---|
-        | R-squared | 0.6332 |
-        | RMSE | $1,215,329 |
-        | MAE | $440,628 |
-        | MAPE | 57.5% |
+        | R-squared | 0.6509 |
+        | RMSE | $1,322,072 |
+        | MAE | $474,602 |
+        | MAPE | 58.2% |
 
         **Notes:**
         - Building age is computed relative to 2017 (the training data period),
@@ -437,7 +438,7 @@ with st.expander("About This Model"):
         - When square footage is unknown (set to 0), the model uses the
           training set median value for imputation.
         - The prediction range shown is the 10th-90th percentile spread
-          across the 300 individual trees in the forest.
+          across the 200 individual trees in the forest.
         - Source: NYC Department of Finance Rolling Sales Data (Kaggle).
         """
     )
